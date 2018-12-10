@@ -2,11 +2,14 @@ from flask import Flask, render_template,jsonify, request, redirect
 import json
 from bs4 import BeautifulSoup
 import requests
+from datetime import datetime
+import os
+import random
 
 app=Flask(__name__)
 print("Flask Start")
 
-keydata={"type":"buttons","buttons":["소개","무료급식정보","편의시설","취업/일자리","여가정보"]}
+keydata={"type":"buttons","buttons":["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]}
 jsonkey=json.dumps(keydata,indent=2,ensure_ascii=False)
 
 @app.route("/")
@@ -21,17 +24,19 @@ def keyboard():
 def message():
     dataRecieve=request.get_json()
     content=dataRecieve['content']
+    recognize=dataRecieve['user_key']
 
     if content==u"소개":
         datasend= {
             "message":{
                 "text":"안녕하세요 컴인봇입니다!\n컴인봇은 노숙인의 기본적 인권 보장 및 자립을 돕기 위해 만들어진 채팅봇으로, 아래와 같은 정보를 제공합니다."
                        "\n-상담원 연결\n- 무료급식정보\n- 편의시설\n- 취업/일자리\n- 여가정보\n"
-                       "\n저희 컴인봇으로 노숙인 여러분의 생활에 조금이나마 도움이 되었으면 좋겠습니다.\n개발:신재욱, 민준혁\n디자인:최재훈,박준서"
+                       "\n저희 컴인봇으로 노숙인 여러분의 생활에 조금이나마 도움이 되었으면 좋겠습니다."
+                       "\n - Outside The Lines, 2018 임팩터톤 6조 -"
             },
             "keyboard":
                 {
-                    "type":"buttons","buttons":["소개","무료급식정보","편의시설","취업/일자리","여가정보"]
+                    "type":"buttons","buttons":["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -42,7 +47,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type":"buttons","buttons":["강북구"]
+                    "type":"buttons", "buttons":["강북구"]
                 }
         }
 
@@ -81,14 +86,39 @@ def message():
             num+=1
         titles=titles+"\n해당정보는 문화카페 길에서 가져온 정보로, 참여 및 문의는 https://blog.naver.com/PostList.nhn?blogId=gonggangil 로 해주세요!"
 
-        print(title)
         datasend = {
             "message": {
                 "text": titles
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
+                }
+        }
+
+    elif content==u'응원의 편지':
+        datasend={
+            "message":{
+                "text": "응원의 편지는 힘든 상황을 함께 버티어내고 다시 일어설 수 있도록"
+                        "서로 응원하는 메시지입니다. 응원을 받고 싶으신 분은 편지받기를, 응원을"
+                        "하고 싶으신 분은 편지쓰기를 눌러주세요."
+                        "\n(욕설, 비방, 명예훼손 및 의도에 맞지 않는 내용은 민/형사상의 책임을"
+                        "질 수 있습니다.)"
+            },
+            "keyboard":
+                {
+                    "type": "buttons",
+                    "buttons": ['편지쓰기','편지받기']
+                }
+        }
+    elif content==u'/취소':
+        datasend={
+            "message":{
+                "text": "응원의 편지 작성을 취소하셨습니다.",
+            },
+            "keyboard":
+                {
+                    "type": "buttons", "buttons": ["응원의 편지", "무료급식정보", "편의시설", "취업/일자리", "여가정보", "소개"]
                 }
         }
 
@@ -114,7 +144,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -129,7 +159,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -141,7 +171,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -152,7 +182,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -176,7 +206,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -187,7 +217,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -198,7 +228,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -209,7 +239,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리","여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -220,7 +250,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -231,7 +261,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -242,7 +272,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -253,7 +283,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -264,7 +294,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -275,7 +305,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -286,7 +316,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -297,7 +327,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -308,7 +338,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -341,7 +371,7 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
@@ -363,28 +393,91 @@ def message():
             },
             "keyboard":
                 {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
+                    "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
                 }
         }
 
+    elif content== u'편지쓰기':
+        datasend={
+            "message": {
+                "text": "편지쓰기를 선택하셨습니다."
+                        "\n잠시 어려운 상황에 빠진 분들께"
+                        "다시 일어날 수 있도록 편지를 작성해주세요!"
+                        "\n취소하고 싶으신 경우 /취소 라고 입력해주세요(500자 내)"
+            }
+        }
 
+    elif content==u'편지받기':
+        path_dir='./letters'
+        file_list=os.listdir(path_dir)
+        endoflist=len(file_list)
+        randomfile=random.randint(0,endoflist-1)
 
+        with open('./letters/'+file_list[randomfile]) as j:
+            dictdata=json.load(j)
+            code=dictdata['code']
+            letter=dictdata['letter']
+
+        datasend = {
+            "message": {
+                "text": code+' 님의 편지입니다.'
+                        '\n----------------'
+                        '\n'+letter+
+                        '\n----------------\n'
+                        '욕설, 비방, 명예훼손 및 의도에 맞지 않는 내용일 경우 상담원을 통해 '
+                        '편지 내용과 작성자를 알려주시면 조치해드리겠습니다.'
+                        '(해당 편지를 복사해서 상담원에게 보내주세요.)'
+            },
+            "keyboard":
+                {
+                    "type": "buttons", "buttons": ["응원의 편지", "무료급식정보", "편의시설", "취업/일자리", "여가정보", "소개"]
+                }
+        }
 
 
     
     else:
-        datasend = {
-            "message": {
-                "text": "잘못된 데이터가 입력되었습니다!"
-            },
-            "keyboard":
-                {
-                    "type": "buttons", "buttons": ["소개", "무료급식정보", "편의시설", "취업/일자리", "여가정보"]
-                }
-        }
+        letter=content
+        today=str(datetime.now())
+        filename = recognize + today
+        length=len(letter)
+
+        if length<=500 and length>0:
+            newletter={
+                "recognize":recognize,
+                "letter": letter,
+                "written_date": str(today),
+                "code": filename
+            }
+            jsonletter=json.dumps(newletter, indent=2, ensure_ascii=False)
+
+            f=open('./letters/'+filename+'.json','w')
+            f.write(jsonletter)
+            f.close()
+
+            datasend = {
+                "message": {
+                    "text": letter+"\n\n내용의 편지가 등록되었습니다. 서로 함께 힘내요! 감사합니다."
+                },
+                "keyboard":
+                    {
+                        "type": "buttons", "buttons": ["응원의 편지","무료급식정보", "편의시설", "취업/일자리", "여가정보","소개"]
+                    }
+            }
+        else:
+            datasend = {
+                "message":{
+                    "text": "500자를 넘기셨습니다."
+                            "\nOverflow Error"
+                },
+                "keyboard":
+                    {
+                        "type": "buttons", "buttons": ["응원의 편지", "무료급식정보", "편의시설", "취업/일자리", "여가정보", "소개"]
+                    }
+            }
 
 
     return jsonify(datasend)
 
 if __name__=="__main__":
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0', port=5001)
